@@ -28,18 +28,18 @@ minlinoccu_dir <- function(Y, Designs_occu, Designs_det, ...) {
 }
 
 
-boot_helper <- function(i,formatedpar, Designs_occu, Designs_det,
+boot_helper <- function(i,formattedpar, Designs_occu, Designs_det,
                     p_occu, p_det, G_occu, G_det, # dimension informations
                   n_site, n_period){
 
-    boot_data <- simuY(formatedpar, Designs_occu, Designs_det, ## design lists, 
+    boot_data <- simuY(formattedpar, Designs_occu, Designs_det, ## design lists, 
                   p_occu, p_det, G_occu, G_det, # dimension informations
                   n_site, n_period)
     minlinoccu_dir(boot_data$det, Designs_occu, Designs_det)
 
 }
 
-parabootstrap <- function(n=100, formatedpar, Designs_occu, Designs_det){
+parabootstrap <- function(n=100, formattedpar, Designs_occu, Designs_det){
     G_occu <- length(Designs_occu) # groups
     G_det <- length(Designs_det[[1]])
     n_period <- length(Designs_det) # period
@@ -48,7 +48,7 @@ parabootstrap <- function(n=100, formatedpar, Designs_occu, Designs_det){
     p_occu <- sapply(Designs_occu, ncol ) # number of predictors in each group
     p_det <- sapply(Designs_det[[1]], ncol )
 
-    lapply(1:n, boot_helper, formatedpar, Designs_occu, Designs_det,
+    lapply(1:n, boot_helper, formattedpar, Designs_occu, Designs_det,
                     p_occu, p_det, G_occu, G_det, # dimension informations
                     n_site, n_period)
 }
