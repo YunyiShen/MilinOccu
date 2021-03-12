@@ -62,6 +62,25 @@ Q_theta_theta_t <- function(par, par_t,
 }
 
 
+logLikR <- function(par,  
+                            Y, missing, # data and flag of missing
+                            non_det, # indeces of non detections
+                            Designs_occu, Designs_det, ## design lists, 
+                            p_occu, p_det, G_occu, G_det, # dimension informations
+                            n_site, n_period){ # repeat informations
+
+    par_new <- formatpara(par, p_occu, p_det, G_occu, G_det)
+    psi <- getpsi(Designs_occu, par_new$beta_occu, par_new$alpha_occu,
+                    n_site, G_occu)
+    p <- getp(Designs_det, par_new$beta_det, par_new$alpha_det,
+                    n_period, n_site, G_det)
+    #browser()
+    #cat("still alive\n")
+    -logLik_cpp(psi,p,Y, missing, non_det)
+}
+
+
+
 # simulate detection history, used in 
 simuY <- function(formatedpar, Designs_occu, Designs_det, ## design lists, 
                   p_occu, p_det, G_occu, G_det, # dimension informations

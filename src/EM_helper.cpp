@@ -27,6 +27,27 @@ double Estep_cpp( const arma::vec & psi, const arma::mat & p, // current psi and
     return(accu(Q));
 }
 
+// [[Rcpp::export]]
+double logLik_cpp( const arma::vec & psi, const arma::mat & p, // current psi and p, parameter
+              const arma::mat & Y, // just the data, change all missing to 0 and record missing using missing
+              const arma::mat & missing, // a matrix indicate which 0s in Y is actually missing 
+              const arma::uvec & non_det){// those without detection, we do not want to calculate this each iteration 
+    // probability of being occupied given no detection, its P(Z_i=1|Y_ij=0,\theta_t), only used when Y_ij=0 for all j, i.e. no detection at all
+    arma::vec pPlus = psi % exp(sum(log(1-p+1e-10),1)); 
+    // the full log likelihood when there exist at least one detection l(theta|Z_i,Y_ij) : 
+    arma::vec p_det_Occu = log(psi+1e-10) + // occupancy rate
+                            sum(((1-missing) % Y) % log(p+1e-10),1) +  // detection 
+                            sum(((1-missing) % (1-Y)) % log(1-p+1e-10),1); // non detections
+    //arma::vec p_nOccu = log(1-psi+1e-10); // probability of absense
+
+    arma::vec Q = p_det_Occu;
+    Q(non_det-1) = log( pPlus(non_det-1)  +  
+                        1-psi(non_det-1));   
+
+    return(accu(Q));
+}
+
+
 
 // calculate the min-linear logistic psi
 // [[Rcpp::export]]
