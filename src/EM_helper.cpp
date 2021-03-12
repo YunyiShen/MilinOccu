@@ -46,7 +46,7 @@ arma::vec getpsi(const List & Desings, // a list of designs for each groups
         linPred.col(i) = design_temp * beta_temp;
     }
 
-    linPred.each_row() += alpha; 
+    linPred.each_row() += alpha.t(); 
 
     arma::vec psi = min(linPred,1);// take minimum 
     psi = 1/(1+exp(-psi));
