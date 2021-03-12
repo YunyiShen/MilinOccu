@@ -43,34 +43,35 @@ formatpara <- function(par, p_occu, p_det, G_occu, G_det){
 Q_theta_theta_t <- function(par, par_t, 
                             Y, missing, # data and flag of missing
                             non_det, # indeces of non detections
-                            Desings_occu, Designs_det, ## design lists, 
+                            Designs_occu, Designs_det, ## design lists, 
                             p_occu, p_det, G_occu, G_det, # dimension informations
                             n_site, n_period){ # repeat informations
 
     par_new <- formatpara(par, p_occu, p_det, G_occu, G_det)
-    psi_t <- getpsi(Desings_occu, par_t$beta_occu, par_t$alpha_occu,
+    psi_t <- getpsi(Designs_occu, par_t$beta_occu, par_t$alpha_occu,
                     n_site, G_occu)
-    psi <- getpsi(Desings_occu, par_new$beta_occu, par_new$alpha_occu,
+    psi <- getpsi(Designs_occu, par_new$beta_occu, par_new$alpha_occu,
                     n_site, G_occu)
-    p_t <- getp(Desings_det, par_t$beta_det, par_t$alpha_det,
+    p_t <- getp(Designs_det, par_t$beta_det, par_t$alpha_det,
                     n_period, n_site, G_det)
-    p <- getp(Desings_det, par_new$beta_det, par_new$alpha_det,
+    p <- getp(Designs_det, par_new$beta_det, par_new$alpha_det,
                     n_period, n_site, G_det)
     #browser()
-    Estep_cpp(psi,p,psi_t,p_t,Y, missing, non_det)
+    #cat("still alive\n")
+    -Estep_cpp(psi,p,psi_t,p_t,Y, missing, non_det)
 }
 
 
 # simulate detection history, used in 
-simuY <- function(formatedpar, Desings_occu, Designs_det, ## design lists, 
+simuY <- function(formatedpar, Designs_occu, Designs_det, ## design lists, 
                   p_occu, p_det, G_occu, G_det, # dimension informations
                   n_site, n_period){
 
-    psi <- getpsi(Desings_occu, formatedpar$beta_occu, 
+    psi <- getpsi(Designs_occu, formatedpar$beta_occu, 
                   formatedpar$alpha_occu,
                   n_site, G_occu)
 
-    p <- getp(Desings_det, formatedpar$beta_det, 
+    p <- getp(Designs_det, formatedpar$beta_det, 
               formatedpar$alpha_det,
               n_period, n_site, G_det)
 

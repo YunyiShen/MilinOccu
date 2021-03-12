@@ -11,9 +11,9 @@ double Estep_cpp( const arma::vec & psi, const arma::mat & p, // current psi and
               const arma::mat & Y, // just the data, change all missing to 0 and record missing using missing
               const arma::mat & missing, // a matrix indicate which 0s in Y is actually missing 
               const arma::uvec & non_det){// those without detection, we do not want to calculate this each iteration 
-    
-    // probability of being occupied given no detection, its P(Z_i=1|Y_ij,\theta_t), only used when Y_ij=0 for all j, i.e. no detection at all
-    arma::vec pPlus = exp(sum(log(1-p_t+1e-10),1) + log(psi_t+1e-10)); 
+    // probability of being occupied given no detection, its P(Z_i=1|Y_ij=0,\theta_t), only used when Y_ij=0 for all j, i.e. no detection at all
+    arma::vec pPlus = psi_t % exp(sum(log(1-p_t+1e-10),1)); 
+    pPlus = pPlus/(pPlus + 1-psi_t);
     // the full log likelihood when there exist at least one detection l(theta|Z_i,Y_ij) : 
     arma::vec p_det_Occu = log(psi+1e-10) + // occupancy rate
                             sum(((1-missing) % Y) % log(p+1e-10),1) +  // detection 
@@ -21,8 +21,8 @@ double Estep_cpp( const arma::vec & psi, const arma::mat & p, // current psi and
     arma::vec p_nOccu = log(1-psi+1e-10); // probability of absense
 
     arma::vec Q = p_det_Occu;
-    Q(non_det) = pPlus(non_det) % p_det_Occu(non_det) +  // key part of expectation, this is the P(Z=1|Y_ij=0,\theta_t)*l(\theta|Z_i=1,Y_ij=0) 
-                (1-pPlus(non_det)) % p_nOccu(non_det);   // similarly P(Z_i=0|Y_ij=0,\theta_t)*l(\theta|Z_i=0,Y_ij=0) 
+    Q(non_det-1) = pPlus(non_det-1) % p_det_Occu(non_det-1) +  // key part of expectation, this is the P(Z=1|Y_ij=0,\theta_t)*l(\theta|Z_i=1,Y_ij=0) 
+                (1-pPlus(non_det-1)) % p_nOccu(non_det-1);   // similarly P(Z_i=0|Y_ij=0,\theta_t)*l(\theta|Z_i=0,Y_ij=0) 
 
     return(accu(Q));
 }
@@ -30,7 +30,7 @@ double Estep_cpp( const arma::vec & psi, const arma::mat & p, // current psi and
 
 // calculate the min-linear logistic psi
 // [[Rcpp::export]]
-arma::vec getpsi(const List & Desings, // a list of designs for each groups
+arma::vec getpsi(const List & Designs, // a list of designs for each groups
                 const List & betas, // list of regression coefficients 
                 const arma::vec & alpha, // the intercept, should be size G
                 int n_site, // number of sites, basecally number of rows of Designs[[1]]
@@ -41,7 +41,7 @@ arma::vec getpsi(const List & Desings, // a list of designs for each groups
     //arma::vec beta_temp;
     for (int i = 0; i < G; i++)
     {
-        arma::mat design_temp = Desings[i];
+        arma::mat design_temp = Designs[i];
         arma::vec beta_temp = betas[i];
         linPred.col(i) = design_temp * beta_temp;
     }
