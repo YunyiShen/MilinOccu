@@ -55,7 +55,7 @@ Q_theta_theta_t(par, fooo,
                             n_site, n_period)
 
 
-
+logLik_cpp(psi,p, Y, missing, non_det)
 
 
 
