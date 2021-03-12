@@ -33,34 +33,6 @@ formatpara <- function(par, p_occu, p_det, G_occu, G_det){
            alpha_det = alpha_det, beta_det = beta_det))
 }
 
-# par_t is the formatted par_t after formatpara()
-#  Design_occu is a list with G_occu design matrix of each group of predictors,
-#    They should all have same number of rows
-#  Design_det is a list whose element has same format as Design_occu, each element
-#    is for one period. 
-
-
-Q_theta_theta_t <- function(par, par_t, 
-                            Y, missing, # data and flag of missing
-                            non_det, # indeces of non detections
-                            Designs_occu, Designs_det, ## design lists, 
-                            p_occu, p_det, G_occu, G_det, # dimension informations
-                            n_site, n_period){ # repeat informations
-
-    par_new <- formatpara(par, p_occu, p_det, G_occu, G_det)
-    psi_t <- getpsi(Designs_occu, par_t$beta_occu, par_t$alpha_occu,
-                    n_site, G_occu)
-    psi <- getpsi(Designs_occu, par_new$beta_occu, par_new$alpha_occu,
-                    n_site, G_occu)
-    p_t <- getp(Designs_det, par_t$beta_det, par_t$alpha_det,
-                    n_period, n_site, G_det)
-    p <- getp(Designs_det, par_new$beta_det, par_new$alpha_det,
-                    n_period, n_site, G_det)
-    #browser()
-    #cat("still alive\n")
-    -Estep_cpp(psi,p,psi_t,p_t,Y, missing, non_det)
-}
-
 
 logLikR <- function(par,  
                             Y, missing, # data and flag of missing
@@ -89,7 +61,7 @@ simuY <- function(formatedpar, Designs_occu, Designs_det, ## design lists,
     psi <- getpsi(Designs_occu, formatedpar$beta_occu, 
                   formatedpar$alpha_occu,
                   n_site, G_occu)
-
+    #browser()
     p <- getp(Designs_det, formatedpar$beta_det, 
               formatedpar$alpha_det,
               n_period, n_site, G_det)
@@ -97,6 +69,7 @@ simuY <- function(formatedpar, Designs_occu, Designs_det, ## design lists,
     occu <- runif(n_site)<=psi
     det <- matrix(runif(n_site * n_period),n_site) <= p
 
-    det * (occu %*% matrix(1,nrow = 1, ncol = n_period))
+    det <- det * (occu %*% matrix(1,nrow = 1, ncol = n_period))
+    return(list(occu = occu, det = det))
 }
 

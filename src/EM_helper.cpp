@@ -5,34 +5,34 @@ using namespace arma;
 
 // This is the E step of EM algorithm, formating for psi and p should be done in R
 // psi should be a col vector while p should be a matrix with row as site and column as period
-// [[Rcpp::export]]
-double Estep_cpp( const arma::vec & psi, const arma::mat & p, // current psi and p, parameter
-              const arma::vec & psi_t, const arma::mat & p_t,// old psi and p in expectation step
-              const arma::mat & Y, // just the data, change all missing to 0 and record missing using missing
-              const arma::mat & missing, // a matrix indicate which 0s in Y is actually missing 
-              const arma::uvec & non_det){// those without detection, we do not want to calculate this each iteration 
-    // probability of being occupied given no detection, its P(Z_i=1|Y_ij=0,\theta_t), only used when Y_ij=0 for all j, i.e. no detection at all
-    arma::vec pPlus = psi_t % exp(sum(log(1-p_t+1e-10),1)); 
-    pPlus = pPlus/(pPlus + 1-psi_t);
-    // the full log likelihood when there exist at least one detection l(theta|Z_i,Y_ij) : 
-    arma::vec p_det_Occu = log(psi+1e-10) + // occupancy rate
-                            sum(((1-missing) % Y) % log(p+1e-10),1) +  // detection 
-                            sum(((1-missing) % (1-Y)) % log(1-p+1e-10),1); // non detections
-    arma::vec p_nOccu = log(1-psi+1e-10); // probability of absense
+// // [[Rcpp::export]]
+// double Estep_cpp( const arma::vec & psi, const arma::mat & p, // current psi and p, parameter
+//               const arma::vec & psi_t, const arma::mat & p_t,// old psi and p in expectation step
+//               const arma::mat & Y, // just the data, change all missing to 0 and record missing using missing
+//               const arma::mat & missing, // a matrix indicate which 0s in Y is actually missing 
+//               const arma::uvec & non_det){// those without detection, we do not want to calculate this each iteration 
+//     // probability of being occupied given no detection, its P(Z_i=1|Y_ij=0,\theta_t), only used when Y_ij=0 for all j, i.e. no detection at all
+//     arma::vec pPlus = psi_t % exp(sum(log(1-p_t+1e-10),1)); 
+//     pPlus = pPlus/(pPlus + 1-psi_t);
+//     // the full log likelihood when there exist at least one detection l(theta|Z_i,Y_ij) : 
+//     arma::vec p_det_Occu = log(psi+1e-10) + // occupancy rate
+//                             sum(((1-missing) % Y) % log(p+1e-10),1) +  // detection 
+//                             sum(((1-missing) % (1-Y)) % log(1-p+1e-10),1); // non detections
+//     arma::vec p_nOccu = log(1-psi+1e-10); // probability of absense
 
-    arma::vec Q = p_det_Occu;
-    Q(non_det-1) = pPlus(non_det-1) % p_det_Occu(non_det-1) +  // key part of expectation, this is the P(Z=1|Y_ij=0,\theta_t)*l(\theta|Z_i=1,Y_ij=0) 
-                (1-pPlus(non_det-1)) % p_nOccu(non_det-1);   // similarly P(Z_i=0|Y_ij=0,\theta_t)*l(\theta|Z_i=0,Y_ij=0) 
+//     arma::vec Q = p_det_Occu;
+//     Q(non_det-1) = pPlus(non_det-1) % p_det_Occu(non_det-1) +  // key part of expectation, this is the P(Z=1|Y_ij=0,\theta_t)*l(\theta|Z_i=1,Y_ij=0) 
+//                 (1-pPlus(non_det-1)) % p_nOccu(non_det-1);   // similarly P(Z_i=0|Y_ij=0,\theta_t)*l(\theta|Z_i=0,Y_ij=0) 
 
-    return(accu(Q));
-}
+//     return(accu(Q));
+// }
 
 // [[Rcpp::export]]
 double logLik_cpp( const arma::vec & psi, const arma::mat & p, // current psi and p, parameter
               const arma::mat & Y, // just the data, change all missing to 0 and record missing using missing
               const arma::mat & missing, // a matrix indicate which 0s in Y is actually missing 
               const arma::uvec & non_det){// those without detection, we do not want to calculate this each iteration 
-    // probability of being occupied given no detection, its P(Z_i=1|Y_ij=0,\theta_t), only used when Y_ij=0 for all j, i.e. no detection at all
+    // probability of being occupied but no detection, only used when Y_ij=0 for all j, i.e. no detection at all
     arma::vec pPlus = psi % exp(sum(log(1-p+1e-10),1)); 
     // the full log likelihood when there exist at least one detection l(theta|Z_i,Y_ij) : 
     arma::vec p_det_Occu = log(psi+1e-10) + // occupancy rate

@@ -11,16 +11,19 @@ source("./R/MilinOccu.R")
 # par formating
 G_occu <- 3
 G_det <- 2
-p_occu <- 1:G_occu
-p_det <- 1:G_det
+p_occu <- rep(1,G_occu)
+p_det <- rep(1,G_det)
 
-set.seed(42)
-par <- rnorm(G_occu + G_det + sum(p_occu) + sum(p_det), 3,2)
+set.seed(12345)
+par <- rnorm(G_occu + G_det + sum(p_occu) + sum(p_det), 2,2)
 
 theta <- formatpara(par,p_occu,p_det,G_occu, G_det)
+theta$alpha_occu <- rep(2,G_occu)
+theta$alpha_det <- rep(2,G_det)
 
 
-n_site <- 500
+
+n_site <- 150
 n_period <- 15
 
 Designs <- list(matrix(rnorm(n_site*p_det[1]),n_site),
@@ -41,6 +44,7 @@ Y <- simuY(theta, Designs_occu,Designs_det,
       p_occu, p_det, G_occu, G_det, # dimension informations
       n_site, n_period)
 
-tryres <- minlinoccu_dir(Y, Designs_occu, Designs_det, 
+tryres <- minlinoccu_dir(Y$det, Designs_occu, Designs_det, 
          control = list(trace = 1, maxit = 10000))
 
+boot_res <- parabootstrap(3,tryres$formatted, Designs_occu, Designs_det )
