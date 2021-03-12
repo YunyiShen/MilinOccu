@@ -24,6 +24,7 @@ formatpara <- function(par, p_occu, p_det, G_occu, G_det){
         g <- g + p_occu[i]
     }
     alpha_det <- par[1:G_det + g]
+    g <- g + G_det
     for(i in 1:G_det){
         beta_det[[i]] <- par[1:p_det[i] + g]
         g <- g + p_det[i]
