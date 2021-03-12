@@ -37,12 +37,12 @@ arma::vec getpsi(const List & Desings, // a list of designs for each groups
                 int G){// number of groups
 
     arma::mat linPred(n_site, G, arma::fill::zeros);// the linear predictors (plus intercept)
-    arma::mat design_temp;
-    arma::vec beta_temp;
+    //arma::mat design_temp;
+    //arma::vec beta_temp;
     for (int i = 0; i < G; i++)
     {
-        design_temp = Desings[i];
-        beta_temp = betas[i];
+        arma::mat design_temp = Desings[i];
+        arma::vec beta_temp = betas[i];
         linPred.col(i) = design_temp * beta_temp;
     }
 
