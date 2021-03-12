@@ -40,8 +40,7 @@ minlinoccu_EM <- function(Y, Designs_occu, Designs_det,
     return(list(formatted = par_res, optim = par_opt))
 }
 
-minlinoccu_dir <- function(Y, Designs_occu, Designs_det, 
-                max_iter=10000, tol=1e-5, ...) {
+minlinoccu_dir <- function(Y, Designs_occu, Designs_det, ...) {
     G_occu <- length(Designs_occu) # groups
     G_det <- length(Designs_det[[1]])
     n_period <- length(Designs_det) # period

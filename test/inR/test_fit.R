@@ -20,7 +20,7 @@ par <- rnorm(G_occu + G_det + sum(p_occu) + sum(p_det), 3,2)
 theta <- formatpara(par,p_occu,p_det,G_occu, G_det)
 
 
-n_site <- 100
+n_site <- 500
 n_period <- 15
 
 Designs <- list(matrix(rnorm(n_site*p_det[1]),n_site),
@@ -42,5 +42,5 @@ Y <- simuY(theta, Designs_occu,Designs_det,
       n_site, n_period)
 
 tryres <- minlinoccu_dir(Y, Designs_occu, Designs_det, 
-                max_iter=10000, tol=1e-4, control = list(trace = 1, maxit = 10000))
+         control = list(trace = 1, maxit = 10000))
 
