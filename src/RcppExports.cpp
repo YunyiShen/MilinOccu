@@ -6,55 +6,57 @@
 
 using namespace Rcpp;
 
-// rcpparma_hello_world
-arma::mat rcpparma_hello_world();
-RcppExport SEXP _MiLinOccu_rcpparma_hello_world() {
+// logLik_cpp
+double logLik_cpp(const arma::vec& psi, const arma::mat& p, const arma::mat& Y, const arma::mat& missing, const arma::uvec& non_det);
+RcppExport SEXP _MiLinOccu_logLik_cpp(SEXP psiSEXP, SEXP pSEXP, SEXP YSEXP, SEXP missingSEXP, SEXP non_detSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpparma_hello_world());
+    Rcpp::traits::input_parameter< const arma::vec& >::type psi(psiSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type missing(missingSEXP);
+    Rcpp::traits::input_parameter< const arma::uvec& >::type non_det(non_detSEXP);
+    rcpp_result_gen = Rcpp::wrap(logLik_cpp(psi, p, Y, missing, non_det));
     return rcpp_result_gen;
 END_RCPP
 }
-// rcpparma_outerproduct
-arma::mat rcpparma_outerproduct(const arma::colvec& x);
-RcppExport SEXP _MiLinOccu_rcpparma_outerproduct(SEXP xSEXP) {
+// getpsi
+arma::vec getpsi(const List& Designs, const List& betas, const arma::vec& alpha, int n_site, int G);
+RcppExport SEXP _MiLinOccu_getpsi(SEXP DesignsSEXP, SEXP betasSEXP, SEXP alphaSEXP, SEXP n_siteSEXP, SEXP GSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpparma_outerproduct(x));
+    Rcpp::traits::input_parameter< const List& >::type Designs(DesignsSEXP);
+    Rcpp::traits::input_parameter< const List& >::type betas(betasSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type n_site(n_siteSEXP);
+    Rcpp::traits::input_parameter< int >::type G(GSEXP);
+    rcpp_result_gen = Rcpp::wrap(getpsi(Designs, betas, alpha, n_site, G));
     return rcpp_result_gen;
 END_RCPP
 }
-// rcpparma_innerproduct
-double rcpparma_innerproduct(const arma::colvec& x);
-RcppExport SEXP _MiLinOccu_rcpparma_innerproduct(SEXP xSEXP) {
+// getp
+arma::mat getp(const List& Designs_det, const List& betas_det, const arma::vec& alpha, int n_period, int n_site, int G);
+RcppExport SEXP _MiLinOccu_getp(SEXP Designs_detSEXP, SEXP betas_detSEXP, SEXP alphaSEXP, SEXP n_periodSEXP, SEXP n_siteSEXP, SEXP GSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpparma_innerproduct(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rcpparma_bothproducts
-Rcpp::List rcpparma_bothproducts(const arma::colvec& x);
-RcppExport SEXP _MiLinOccu_rcpparma_bothproducts(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpparma_bothproducts(x));
+    Rcpp::traits::input_parameter< const List& >::type Designs_det(Designs_detSEXP);
+    Rcpp::traits::input_parameter< const List& >::type betas_det(betas_detSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type n_period(n_periodSEXP);
+    Rcpp::traits::input_parameter< int >::type n_site(n_siteSEXP);
+    Rcpp::traits::input_parameter< int >::type G(GSEXP);
+    rcpp_result_gen = Rcpp::wrap(getp(Designs_det, betas_det, alpha, n_period, n_site, G));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_MiLinOccu_rcpparma_hello_world", (DL_FUNC) &_MiLinOccu_rcpparma_hello_world, 0},
-    {"_MiLinOccu_rcpparma_outerproduct", (DL_FUNC) &_MiLinOccu_rcpparma_outerproduct, 1},
-    {"_MiLinOccu_rcpparma_innerproduct", (DL_FUNC) &_MiLinOccu_rcpparma_innerproduct, 1},
-    {"_MiLinOccu_rcpparma_bothproducts", (DL_FUNC) &_MiLinOccu_rcpparma_bothproducts, 1},
+    {"_MiLinOccu_logLik_cpp", (DL_FUNC) &_MiLinOccu_logLik_cpp, 5},
+    {"_MiLinOccu_getpsi", (DL_FUNC) &_MiLinOccu_getpsi, 5},
+    {"_MiLinOccu_getp", (DL_FUNC) &_MiLinOccu_getp, 6},
     {NULL, NULL, 0}
 };
 

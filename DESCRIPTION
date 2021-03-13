@@ -9,3 +9,4 @@ Description: This package fit a min-linear logistic regression based occupancy m
 License: GPL-3
 Imports: Rcpp (>= 1.0.6)
 LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 7.1.1
