@@ -14,17 +14,18 @@ G_det <- 2
 p_occu <- rep(1,G_occu)
 p_det <- rep(1,G_det)
 
-set.seed(12345)
-par <- rnorm(G_occu + G_det + sum(p_occu) + sum(p_det), 0,5)
+par <- rep(1,G_occu + G_det + sum(p_occu) + sum(p_det))
 
 theta <- formatpara(par,p_occu,p_det,G_occu, G_det)
-theta$alpha_occu <- rep(3,G_occu)
-theta$alpha_det <- rep(1,G_det)
+theta$alpha_occu <- rep(1,G_occu)
+theta$alpha_det <- rep(0,G_det)
+theta$beta_occu <- list(c(2),c(-1),c(1))
+theta$beta_det <- list(c(1),c(-1))
+#theta$beta_det <- list(rep(1,3))
+#theta$beta_occu <- list(rep(1,3))
 
-
-
-n_site <- 300
-n_period <- 15
+n_site <- 500
+n_period <- 10
 
 Designs <- list(matrix(rnorm(n_site*p_det[1]),n_site),
     matrix(rnorm(n_site * p_det[2]),n_site))
@@ -47,7 +48,9 @@ Y <- simuY(theta, Designs_occu,Designs_det,
 tryres <- minlinoccu_dir(Y$det, Designs_occu, Designs_det, 
          control = list(trace = 1, maxit = 10000))
 
-more_res <- parabootstrap(50, Y$det, theta, Designs_occu, Designs_det,control = list(trace = 0, maxit = 10000))
+more_res <- parabootstrap(100, Y$det, theta, Designs_occu, Designs_det,control = list(trace = 0, maxit = 10000))
 
-www <- sapply(more_res, function(w){w$formatted$beta_det[[2]]})
-hist(www)
+www <- sapply(more_res, function(w){w$formatted$beta_occu[[3]]})
+plot(density(www))
+boxplot(www, outline = FALSE)
+

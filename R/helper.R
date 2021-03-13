@@ -29,7 +29,7 @@ formatpara <- function(par, p_occu, p_det, G_occu, G_det){
         beta_det[[i]] <- par[1:p_det[i] + g]
         g <- g + p_det[i]
     }
-
+    #browser()
     return(list(alpha_occu = alpha_occu, beta_occu = beta_occu, 
            alpha_det = alpha_det, beta_det = beta_det))
 }

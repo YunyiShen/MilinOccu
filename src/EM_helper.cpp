@@ -34,8 +34,10 @@ double logLik_cpp( const arma::vec & psi, const arma::mat & p, // current psi an
               const arma::uvec & non_det){// those without detection, we do not want to calculate this each iteration 
     // the full log likelihood when there exist at least one detection l(theta|Z_i,Y_ij) : 
     arma::vec p_det_Occu = log(psi+1e-10) + // occupancy rate
-                            sum(((1-missing) % Y) % log(p+1e-10),1) +  // detection 
-                            sum(((1-missing) % (1-Y)) % log(1-p+1e-10),1); // non detections
+        //arma::sum( Y % log(p+1e-10),1) +  // detection 
+        //arma::sum( (1-Y) % log(1-p+1e-10),1);
+                            arma::sum(((1-missing) % Y) % log(p+1e-10),1) +  // detection 
+                            arma::sum(((1-missing) % (1-Y)) % log(1-p+1e-10),1); // non detections
     //arma::vec p_nOccu = log(1-psi+1e-10); // probability of absense
     
     arma::vec Q = p_det_Occu;
@@ -70,7 +72,7 @@ arma::vec getpsi(const List & Designs, // a list of designs for each groups
 
     linPred.each_row() += alpha.t(); 
 
-    arma::vec psi = min(linPred,1);// take minimum 
+    arma::vec psi = arma::min(linPred,1);// take minimum 
     psi = 1/(1+exp(-psi));
     return(psi);
 }
