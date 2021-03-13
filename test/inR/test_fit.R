@@ -45,10 +45,10 @@ Y <- simuY(theta, Designs_occu,Designs_det,
       p_occu, p_det, G_occu, G_det, # dimension informations
       n_site, n_period)
 
-tryres <- minlinoccu_dir(Y$det, Designs_occu, Designs_det, 
+tryres <- minlinoccu(Y$det, Designs_occu, Designs_det, 
          control = list(trace = 1, maxit = 10000))
 
-more_res <- parabootstrap(100, Y$det, theta, Designs_occu, Designs_det,control = list(trace = 0, maxit = 10000))
+more_res <- milinbootstrap(100, Y$det, theta, Designs_occu, Designs_det,control = list(trace = 0, maxit = 10000))
 
 www <- sapply(more_res, function(w){w$formatted$beta_occu[[3]]})
 plot(density(www))

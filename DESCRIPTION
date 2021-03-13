@@ -1,11 +1,11 @@
 Package: MiLinOccu
 Type: Package
-Title: What the package does (short line)
-Version: 1.0
+Title: Min-Linear Occupancy Model
+Version: 0.1
 Date: 2021-03-11
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Yunyi Shen
+Maintainer: Yunyi Shen <yyshen@pku.edu.cn>
+Description: This package fit a min-linear logistic regression based occupancy model and use bootstrap to construct confindence intervals
+License: GPL-3
 Imports: Rcpp (>= 1.0.6)
 LinkingTo: Rcpp, RcppArmadillo
