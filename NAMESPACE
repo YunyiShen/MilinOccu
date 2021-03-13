@@ -1,4 +1,3 @@
 useDynLib(MiLinOccu, .registration=TRUE)
 importFrom(Rcpp, evalCpp)
-import(RcppArmadillo)
 export(minlinoccu, milinbootstrap)
