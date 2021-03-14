@@ -3,7 +3,7 @@ library(RcppArmadillo)
 library(Matrix)
 
 source("./R//helper.R")
-sourceCpp("./src/EM_helper.cpp")
+sourceCpp("./src/single_spp_helper.cpp")
 source("./R/MilinOccu.R")
 
 
