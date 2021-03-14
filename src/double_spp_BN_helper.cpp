@@ -105,12 +105,12 @@ double logLik_2spp_BN(const arma::vec & psi_dom, const arma::mat & p_dom, // cur
     arma::vec p_site = p11;
 
     // did not see dominate but see subordinate can be p11 or p01
-    p_site(non_det_dom) = p11(non_det_dom) + p01(non_det_dom);
+    p_site(non_det_dom-1) = p11(non_det_dom-1) + p01(non_det_dom-1);
     // did not see sub but se dom, 11 or 10
-    p_site(non_det_sub) = p11(non_det_sub) + p10(non_det_sub);
+    p_site(non_det_sub-1) = p11(non_det_sub-1) + p10(non_det_sub-1);
     // did not see both, can be anywhere
-    p_site(non_det_both) = p11(non_det_both) + p01(non_det_both) + 
-                           p10(non_det_both) + p00(non_det_both);
+    p_site(non_det_both-1) = p11(non_det_both-1) + p01(non_det_both-1) + 
+                           p10(non_det_both-1) + p00(non_det_both-1);
 
     return(accu(log(p_site)));
 
