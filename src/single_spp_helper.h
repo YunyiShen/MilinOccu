@@ -6,6 +6,9 @@
 using namespace Rcpp;
 using namespace arma; 
 
+template <typename T>
+T logit(const T & p); 
+
 double logLik_cpp( const arma::vec & psi, const arma::mat & p, // current psi and p, parameter
               const arma::mat & Y, // just the data, change all missing to 0 and record missing using missing
               const arma::mat & missing, // a matrix indicate which 0s in Y is actually missing 

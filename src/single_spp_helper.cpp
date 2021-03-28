@@ -1,7 +1,15 @@
 #include "RcppArmadillo.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;
-using namespace arma;    
+using namespace arma;  
+
+
+template <typename T>
+T logit(const T & p){
+    T pp = p + (p<=1e-10) * 1e-10;
+    return(log(pp/(1-pp)));
+}
+
 
 // This is the E step of EM algorithm, formating for psi and p should be done in R
 // psi should be a col vector while p should be a matrix with row as site and column as period
@@ -83,7 +91,7 @@ arma::vec getpsi(const List & Designs, // a list of designs for each groups
 // [[Rcpp::export]]
 arma::mat getp(const List & Designs_det,// should be a list of list, each element for a period
                 const List & betas_det,// just a list, each element is a vector for each group
-                const arma::vec & alpha,// similarly intercept
+                const arma::vec & alpha_det,// similarly intercept
                 int n_period,// number of periods 
                 int n_site, // number of sites
                 int G // number of groups
@@ -94,7 +102,7 @@ arma::mat getp(const List & Designs_det,// should be a list of list, each elemen
     for (int i = 0; i < n_period; i++)
     {
         design_temp = Designs_det[i];
-        pmat.col(i) = getpsi(design_temp, betas_det, alpha, n_site, G);
+        pmat.col(i) = getpsi(design_temp, betas_det, alpha_det, n_site, G);
     }
     
     return(pmat);

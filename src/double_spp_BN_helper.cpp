@@ -1,7 +1,7 @@
 #include "single_spp_helper.h"
 
 // occupancy rate of the subordinate species
-arma::mat getpsi_sub(const List & Designs, // a list of designs for each groups
+arma::vec getpsi_sub(const List & Designs, // a list of designs for each groups
                 const List & betas, // list of regression coefficients 
                 const arma::vec & alpha, // the intercept, should be size G
                 const arma::vec & omega, // two dimensional competing parameter, intercept and slope
@@ -35,7 +35,7 @@ arma::mat p_det_sub(const List & Designs_det,// should be a list of list, each e
                 const arma::mat & Y_sub, // detection 
                 const arma::mat & missing, // missing values
                 const List & betas_det,// just a list, each element is a vector for each group
-                const arma::vec & alpha,// similarly intercept
+                const arma::vec & alpha_det,// similarly intercept
                 const arma::vec & omega, // effect on detection 
                 int n_period,// number of periods 
                 int n_site, // number of sites
@@ -50,13 +50,13 @@ arma::mat p_det_sub(const List & Designs_det,// should be a list of list, each e
     for (int i = 0; i < n_period; i++)
     {
         design_temp = Designs_det[i];
-        ptemp = getpsi_sub(design_temp, betas_det, alpha, omega,n_site, G);
+        ptemp = getpsi_sub(design_temp, betas_det, alpha_det, omega,n_site, G);
         pmat_z10.col(i) = ptemp.col(0); // p when dominate absent
         pmat_z11.col(i) = ptemp.col(1);
     }
     res.col(0) = arma::sum(((1-missing) % Y_sub) % log(pmat_z10+1e-10),1) + 
                  arma::sum(((1-missing) % (1-Y_sub)) % log((1-pmat_z10)+1e-10),1);
-    res.col(0) = arma::sum(((1-missing) % Y_sub) % log(pmat_z11+1e-10),1) + 
+    res.col(1) = arma::sum(((1-missing) % Y_sub) % log(pmat_z11+1e-10),1) + 
                  arma::sum(((1-missing) % (1-Y_sub)) % log((1-pmat_z11)+1e-10),1);
     return(exp(res));
 }
@@ -66,14 +66,14 @@ arma::mat p_det_dom(const List & Designs_det,// should be a list of list, each e
                 const arma::mat & Y_dom, // detection 
                 const arma::mat & missing, // missing values
                 const List & betas_det,// just a list, each element is a vector for each group
-                const arma::vec & alpha,// similarly intercept
+                const arma::vec & alpha_det,// similarly intercept
                 int n_period,// number of periods 
                 int n_site, // number of sites
                 int G // number of groups
                 ){
     arma::mat p = getp(Designs_det,// should be a list of list, each element for a period
                 betas_det,// just a list, each element is a vector for each group
-                alpha,// similarly intercept
+                alpha_det,// similarly intercept
                 n_period,// number of periods 
                 n_site, // number of sites
                 G // number of groups
@@ -88,7 +88,7 @@ arma::mat p_det_dom(const List & Designs_det,// should be a list of list, each e
 
 
 double logLik_2spp_BN(const arma::vec & psi_dom, const arma::mat & p_dom, // current psi and p, parameter
-              const arma::vec & psi_sub, const arma::mat & p_sub, // current psi and p, parameter
+              const arma::mat & psi_sub, const arma::mat & p_sub, // current psi and p, parameter
               const arma::uvec & non_det_dom, 
               const arma::uvec & non_det_sub,
               const arma::uvec & non_det_both){
